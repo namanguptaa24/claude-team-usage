@@ -1,0 +1,15 @@
+{
+  "name": "claude-team-usage-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Collects Claude usage from the team and serves the dashboard. No dependencies: Node's built-in http and sqlite.",
+  "license": "MIT",
+  "main": "src/index.js",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test test/"
+  }
+}

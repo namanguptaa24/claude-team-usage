@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Claude Team Usage</title>
+  <link rel="stylesheet" href="ui.css">
+</head>
+<body class="popup">
+  <div class="row"><h1>Claude Team Usage</h1><span class="muted" id="who"></span></div>
+
+  <h2>Shared account limits</h2>
+  <div id="limits"><p class="muted">No limit data yet. It appears after a message on claude.ai, or after a Claude Code reply from someone with the hook installed.</p></div>
+
+  <h2>Your usage</h2>
+  <div class="totals" id="totals"></div>
+  <ul class="list" id="by-source"></ul>
+  <h3 class="sub">By model · last 7 days</h3>
+  <ul class="list" id="by-model"></ul>
+
+  <section id="team-wrap" hidden>
+    <h2>Team · last 7 days</h2>
+    <ol class="list team" id="team"></ol>
+  </section>
+
+  <h2>Sync</h2>
+  <p id="sync" class="muted">…</p>
+  <div class="actions">
+    <button type="button" id="settings">Settings</button>
+    <button type="button" id="dashboard" class="primary" hidden>Open dashboard</button>
+  </div>
+  <script src="config.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

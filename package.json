@@ -1,0 +1,17 @@
+{
+  "name": "claude-team-usage",
+  "version": "1.0.0",
+  "private": true,
+  "description": "See which team member uses the shared Claude limit, and on which model: server + dashboard, Claude Code hook, and Chrome extension.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node server/src/index.js",
+    "test": "node --test",
+    "install-hook": "node claude-code-hook/install.js",
+    "pack-extension": "node scripts/pack-extension.js",
+    "pack-teammates": "node scripts/pack-teammates.js"
+  }
+}

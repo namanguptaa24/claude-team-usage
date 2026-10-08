@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Claude Team Usage settings</title>
+  <link rel="stylesheet" href="ui.css">
+</head>
+<body class="options">
+  <main>
+    <h1>Claude Team Usage</h1>
+    <p class="muted">This browser reports which model you use on claude.ai and how the shared limit moves. Your messages and replies are never sent, only counts.</p>
+    <p id="managed-note" class="managed" hidden></p>
+    <form id="form">
+      <label for="serverUrl">Server address</label>
+      <input id="serverUrl" type="url" placeholder="http://192.168.1.10:8787" required>
+      <p class="hint">Ask the person who runs the usage server.</p>
+
+      <label for="teamToken">Team token</label>
+      <input id="teamToken" type="password" autocomplete="off" required>
+
+      <label for="member">Your name</label>
+      <input id="member" type="text" maxlength="64" placeholder="asha" required>
+      <p class="hint">Use the same name you gave the Claude Code installer, so both add up under one person.</p>
+
+      <div class="actions">
+        <button type="submit" class="primary" id="save">Save</button>
+        <button type="button" id="test">Test connection</button>
+      </div>
+      <p id="result" role="status"></p>
+    </form>
+  </main>
+  <script src="config.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

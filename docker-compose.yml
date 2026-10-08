@@ -1,0 +1,14 @@
+services:
+  server:
+    build: ./server
+    restart: unless-stopped
+    ports:
+      - "8787:8787"
+    environment:
+      TEAM_TOKEN: ${TEAM_TOKEN:?Set TEAM_TOKEN in .env}
+      DASHBOARD_TOKEN: ${DASHBOARD_TOKEN:-}
+    volumes:
+      - usage-data:/data
+
+volumes:
+  usage-data:

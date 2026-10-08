@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Claude Team Usage</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <h1>Claude Team Usage</h1>
+      <p class="sub" id="subtitle">Who is using the shared Claude limit, and on which model</p>
+    </div>
+    <div class="filters" role="toolbar" aria-label="Filters">
+      <div class="seg" id="range" role="group" aria-label="Time range"></div>
+      <label class="select"><span class="sr-only">Source</span>
+        <select id="source">
+          <option value="">All sources</option>
+          <option value="vscode">VS Code</option>
+          <option value="claude-code">Claude Code CLI</option>
+          <option value="claude-ai">claude.ai</option>
+        </select>
+      </label>
+      <label class="select"><span class="sr-only">Member</span>
+        <select id="member"><option value="">All members</option></select>
+      </label>
+      <button type="button" id="refresh" class="btn">Refresh</button>
+      <button type="button" id="manage" class="btn primary" hidden>Manage team</button>
+    </div>
+    <div class="custom" id="custom" role="group" aria-label="Custom date and time" hidden>
+      <label>Date <input type="date" id="c-date" required></label>
+      <label>From <input type="time" id="c-time" step="60" required></label>
+      <label>For
+        <select id="c-dur">
+          <option value="5">5 minutes</option>
+          <option value="10">10 minutes</option>
+          <option value="15">15 minutes</option>
+          <option value="30">30 minutes</option>
+          <option value="60">1 hour</option>
+          <option value="120">2 hours</option>
+          <option value="180">3 hours</option>
+          <option value="300">5 hours</option>
+          <option value="480">8 hours</option>
+          <option value="720">12 hours</option>
+          <option value="1440">24 hours</option>
+        </select>
+      </label>
+      <span class="until" id="c-until"></span>
+    </div>
+  </header>
+
+  <main id="app">
+    <section id="login" class="card login" hidden>
+      <h2>Sign in</h2>
+      <p>Enter the dashboard token. It is the <code>DASHBOARD_TOKEN</code> from the server, or the <code>TEAM_TOKEN</code> when no separate dashboard token is set.</p>
+      <form id="login-form">
+        <label for="token-input">Dashboard token</label>
+        <div class="row">
+          <input id="token-input" type="password" autocomplete="current-password" required>
+          <button type="submit" class="btn primary">Open dashboard</button>
+        </div>
+        <p class="error" id="login-error" hidden></p>
+      </form>
+    </section>
+
+    <div id="content" hidden>
+      <section aria-labelledby="h-alerts">
+        <div class="section-head">
+          <h2 id="h-alerts">Alerts</h2>
+          <p class="note" id="alerts-note"></p>
+        </div>
+        <div id="alerts" class="alerts" role="status"></div>
+      </section>
+
+      <section aria-labelledby="h-limits">
+        <div class="section-head">
+          <h2 id="h-limits">Account limits right now</h2>
+          <p class="note">Live from the shared account. "Who used it" splits each rise in the limit between the people active at that moment.</p>
+        </div>
+        <div id="limits" class="cards"></div>
+      </section>
+
+      <section aria-labelledby="h-board">
+        <div class="section-head">
+          <h2 id="h-board">Leaderboard</h2>
+          <p class="note" id="board-note"></p>
+          <button type="button" class="btn small push" data-export="members" title="One row per day and member, with the share of the shared limit">Download for Excel</button>
+        </div>
+        <div class="table-wrap"><table id="leaderboard" class="data"></table></div>
+      </section>
+
+      <section aria-labelledby="h-members">
+        <div class="section-head">
+          <h2 id="h-members">Usage by member and model</h2>
+          <p class="note">API-equivalent cost at Anthropic list prices. It measures how heavy the usage is, not what you are billed.</p>
+        </div>
+        <div class="legend" id="legend-members"></div>
+        <div id="chart-members" class="chart"></div>
+      </section>
+
+      <section aria-labelledby="h-trend">
+        <div class="section-head">
+          <h2 id="h-trend">Trend</h2>
+          <p class="note" id="trend-note"></p>
+        </div>
+        <div class="legend" id="legend-trend"></div>
+        <div id="chart-trend" class="chart"></div>
+      </section>
+
+      <section aria-labelledby="h-details">
+        <div class="section-head">
+          <h2 id="h-details">Details by member, source and model</h2>
+          <p class="note">claude.ai token counts are estimates (marked ≈). Claude Code counts come from the session transcripts.</p>
+          <button type="button" class="btn small push" data-export="detail" title="One row per day, member, app and model">Download for Excel</button>
+        </div>
+        <div class="table-wrap"><table id="details" class="data"></table></div>
+      </section>
+    </div>
+  </main>
+
+  <dialog id="admin" class="admin" aria-labelledby="h-admin">
+    <div class="admin-head">
+      <h2 id="h-admin">Manage team</h2>
+      <button type="button" class="btn" id="admin-close">Close</button>
+    </div>
+
+    <section aria-labelledby="h-admin-alerts">
+      <h3 id="h-admin-alerts">Alert levels</h3>
+      <form id="settings-form" class="settings">
+        <label for="set-member">Warn when one person uses at least</label>
+        <div class="field"><input id="set-member" type="number" min="1" max="100" step="0.5" required> <span>% of the weekly limit within 24 hours</span></div>
+        <p class="note">At 15% a day, one person alone would use up the whole team’s week in under 7 days.</p>
+        <label for="set-account">Warn when an account limit reaches</label>
+        <div class="field"><input id="set-account" type="number" min="1" max="100" step="1" required> <span>%</span></div>
+        <div class="actions">
+          <button type="submit" class="btn primary">Save</button>
+          <span id="settings-status" class="note" role="status"></span>
+        </div>
+      </form>
+    </section>
+
+    <section aria-labelledby="h-admin-members">
+      <h3 id="h-admin-members">Members</h3>
+      <p class="note"><b>Rename</b> fixes a spelling or merges two names of the same person. Their computer can keep sending the old name. <b>Delete</b> removes everything that member sent, limit readings included, and cannot be undone.</p>
+      <div class="table-wrap"><table id="admin-members" class="data"></table></div>
+      <p id="admin-status" class="note" role="status"></p>
+    </section>
+  </dialog>
+
+  <div id="tooltip" class="tooltip" role="status" aria-live="polite" hidden></div>
+  <script src="app.js"></script>
+</body>
+</html>

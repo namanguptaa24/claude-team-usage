@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "properties": {
+    "serverUrl": {
+      "title": "Server address",
+      "description": "The team usage server, for example http://192.168.1.10:8787",
+      "type": "string"
+    },
+    "teamToken": {
+      "title": "Team token",
+      "description": "TEAM_TOKEN from the server's server/.env file",
+      "type": "string"
+    },
+    "memberFromEmail": {
+      "title": "Name from the work email",
+      "description": "Report usage under the part of the Chrome profile's email before the @. People cannot change it.",
+      "type": "boolean"
+    }
+  }
+}
