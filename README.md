@@ -209,4 +209,4 @@ docs/              screenshots and the Chrome policy guide for admins
 
 ## License
 
-MIT
+MIT, copyright (c) 2026 Naman Gupta. See [LICENSE](LICENSE).
